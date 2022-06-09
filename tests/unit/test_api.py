@@ -1,9 +1,9 @@
-from fastapi.testclient import TestClient
+import pytest
 
 
-def test_example_200(api_client: TestClient):
+@pytest.mark.skip("No unit tests, yet")
+def test_temp():
     """
-    GET /example/aaa OK
+    No tests written yet
     """
-    response = api_client.get("/example/aaa")
-    assert response.json() == {"responseValue": "AAA"}
+    assert False

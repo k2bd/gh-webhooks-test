@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gcp-fastapi-poetry"
+name = "gh-webhooks-test"
 version = "0.1.0"
 description = ""
 authors = []
@@ -9,6 +9,9 @@ python = "^3.9"
 fastapi = "^0.71.0"
 fastapi-camelcase = "^1.0.5"
 uvicorn = "^0.16.0"
+gh-webhooks = "^0.3.0"
+pydantic = {version = "1.9.0", extras = ["email"]}
+google-cloud-logging = "^3.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -41,17 +44,17 @@ test.sequence = ["unit", "integration"]
 
 [tool.poe.tasks.unit]
 sequence = [
-    {cmd = "pytest -vv --cov-report xml --cov-report term --cov=gcp_fastapi_poetry tests/unit"},
+    {cmd = "pytest -vv --cov-report xml --cov-report term --cov=gh_webhooks_test tests/unit"},
 ]
 
 [tool.poe.tasks.integration]
 sequence = [
-    {shell = "pytest -vv --cov-append --cov-report xml --cov-report term --cov=gcp_fastapi_poetry tests/integration"},
+    {shell = "pytest -vv --cov-append --cov-report xml --cov-report term --cov=gh_webhooks_test tests/integration"},
 ]
 
 [tool.poe.tasks.local-server]
 sequence = [
-    {shell = "uvicorn gcp_fastapi_poetry.api:app --reload --port 8011"},
+    {shell = "uvicorn gh_webhooks_test.api:app --reload --port 8011"},
 ]
 
 [build-system]
