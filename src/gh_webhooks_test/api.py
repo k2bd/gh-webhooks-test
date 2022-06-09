@@ -1,13 +1,16 @@
 import logging
+import os
 
-import google.cloud.logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from gh_webhooks import GhWebhookEventHandler
 from gh_webhooks.types import IssueCommentCreated, IssueCommentEdited, PingEvent
 
-logging_client = google.cloud.logging.Client()
-logging_client.setup_logging()
+if os.environ.get("K_SERVICE"):
+    import google.cloud.logging
+
+    logging_client = google.cloud.logging.Client()
+    logging_client.setup_logging()
 
 logger = logging.getLogger(__name__)
 
