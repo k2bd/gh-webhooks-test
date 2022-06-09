@@ -26,7 +26,7 @@ event_handler = GhWebhookEventHandler()
 
 
 @event_handler.on(PingEvent)
-async def handle_new_issue_comment(event: PingEvent):
+async def handle_ping(event: PingEvent):
     logger.info(f"Ping: {event.zen!r}")
 
 
