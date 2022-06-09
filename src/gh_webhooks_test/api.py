@@ -42,4 +42,5 @@ async def handle_edited_issue_comment(event: IssueCommentEdited):
 
 @app.post("/payload")
 async def handle_webhook_payload(request: Request):
-    await event_handler.handle_event(request.json())
+    event = await request.json()
+    await event_handler.handle_event(event)
