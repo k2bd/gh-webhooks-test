@@ -28,6 +28,8 @@ steps:
         --platform managed
         --allow-unauthenticated
         --set-env-vars WEBHOOK_SECRET=$$WEBHOOK_SECRET
+    secretEnv:
+      - WEBHOOK_SECRET
 
   # Apply domain mapping. Cheap idempotency by ignoring failures.
   - name: "gcr.io/cloud-builders/gcloud"
