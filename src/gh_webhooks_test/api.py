@@ -1,10 +1,12 @@
 import logging
 import os
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from gh_webhooks import GhWebhookEventHandler
 from gh_webhooks.types import IssueCommentCreated, IssueCommentEdited, PingEvent
+
+from gh_webhooks_test.auth import auth_with_secret
 
 if os.environ.get("K_SERVICE"):
     import google.cloud.logging
@@ -44,6 +46,9 @@ async def handle_edited_issue_comment(event: IssueCommentEdited):
 
 
 @app.post("/payload")
-async def handle_webhook_payload(request: Request):
+async def handle_webhook_payload(
+    request: Request,
+    auth=Depends(auth_with_secret),
+):
     event = await request.json()
     await event_handler.handle_event(event)
