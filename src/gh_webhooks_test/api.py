@@ -16,7 +16,7 @@ if os.environ.get("K_SERVICE"):
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+app = FastAPI(dependencies=[Depends(auth_with_secret)])
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,9 +46,6 @@ async def handle_edited_issue_comment(event: IssueCommentEdited):
 
 
 @app.post("/payload")
-async def handle_webhook_payload(
-    request: Request,
-    auth=Depends(auth_with_secret),
-):
+async def handle_webhook_payload(request: Request):
     event = await request.json()
     await event_handler.handle_event(event)
