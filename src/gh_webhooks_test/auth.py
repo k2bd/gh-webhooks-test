@@ -31,7 +31,7 @@ def get_github_headers(
     x_hub_signature_256: Optional[str] = Header(None),
 ):
     if x_hub_signature_256:
-        x_hub_signature_256 = x_hub_signature_256.strip("sha256=")
+        x_hub_signature_256 = x_hub_signature_256.strip("sha256=").strip()
     return GithubHeaders(
         event_name=x_gitHub_event,
         delivery_guid=x_github_delivery,
@@ -53,17 +53,14 @@ async def auth_with_secret(
         )
 
     body = await request.body()
-    signature = (
-        "sha256="
-        + hmac.new(
-            WEBHOOK_SECRET.encode("utf-8"),
-            msg=body,
-            digestmod=hashlib.sha256,
-        ).hexdigest()
-    )
+    signature = hmac.new(
+        WEBHOOK_SECRET.encode("utf-8"),
+        msg=body,
+        digestmod=hashlib.sha256,
+    ).hexdigest()
 
-    if signature.lower() != headers.secret_hash.lower():
+    if not hmac.compare_digest(signature, headers.secret_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid secret hash",
+            detail=f"Invalid secret hash {signature!r} - {headers.secret_hash!r}",
         )
