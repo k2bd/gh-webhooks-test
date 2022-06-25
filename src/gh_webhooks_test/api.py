@@ -1,6 +1,6 @@
 import logging
+import os
 
-import google.cloud.logging
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from gh_webhooks import GhWebhookEventHandler
@@ -8,12 +8,17 @@ from gh_webhooks.types import IssueCommentCreated, IssueCommentEdited, PingEvent
 
 from gh_webhooks_test.auth import GithubHeaders, get_github_headers
 
-logging_client = google.cloud.logging.Client()
-logging_client.setup_logging()
+from gh_webhooks_test.auth import auth_with_secret
+
+if os.environ.get("K_SERVICE"):
+    import google.cloud.logging
+
+    logging_client = google.cloud.logging.Client()
+    logging_client.setup_logging()
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+app = FastAPI(dependencies=[Depends(auth_with_secret)])
 
 app.add_middleware(
     CORSMiddleware,
