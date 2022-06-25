@@ -6,9 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from gh_webhooks import GhWebhookEventHandler
 from gh_webhooks.types import IssueCommentCreated, IssueCommentEdited, PingEvent
 
-from gh_webhooks_test.auth import GithubHeaders, get_github_headers
-
-from gh_webhooks_test.auth import auth_with_secret
+from gh_webhooks_test.auth import GithubHeaders, auth_with_secret, get_github_headers
 
 if os.environ.get("K_SERVICE"):
     import google.cloud.logging
@@ -50,7 +48,7 @@ async def handle_edited_issue_comment(event: IssueCommentEdited):
 @app.post("/payload")
 async def handle_webhook_payload(
     request: Request,
-    headers: GithubHeaders= Depends(get_github_headers),
+    headers: GithubHeaders = Depends(get_github_headers),
 ):
     kind = headers.event_name
     event = await request.json()
