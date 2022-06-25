@@ -1,10 +1,12 @@
 import logging
 
 import google.cloud.logging
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from gh_webhooks import GhWebhookEventHandler
 from gh_webhooks.types import IssueCommentCreated, IssueCommentEdited, PingEvent
+
+from gh_webhooks_test.auth import GithubHeaders, get_github_headers
 
 logging_client = google.cloud.logging.Client()
 logging_client.setup_logging()
@@ -41,6 +43,10 @@ async def handle_edited_issue_comment(event: IssueCommentEdited):
 
 
 @app.post("/payload")
-async def handle_webhook_payload(request: Request):
+async def handle_webhook_payload(
+    request: Request,
+    headers: GithubHeaders= Depends(get_github_headers),
+):
+    kind = headers.event_name
     event = await request.json()
-    await event_handler.handle_event(event)
+    await event_handler.handle_event(event, kind)

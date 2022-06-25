@@ -9,7 +9,7 @@ python = "^3.9"
 fastapi = "^0.71.0"
 fastapi-camelcase = "^1.0.5"
 uvicorn = "^0.16.0"
-gh-webhooks = "^0.3.0"
+gh-webhooks = "^0.6.0"
 pydantic = {version = "1.9.0", extras = ["email"]}
 google-cloud-logging = "^3.1.2"
 

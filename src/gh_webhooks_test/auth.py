@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from gh_webhooks_test.constants import WEBHOOK_SECRET
 
 
-class RequestHeaders(BaseModel):
+class GithubHeaders(BaseModel):
     """
     Headers sent by GitHub
     """
@@ -25,14 +25,14 @@ class RequestHeaders(BaseModel):
     secret_hash: Optional[str]
 
 
-def get_headers(
+def get_github_headers(
     x_gitHub_event: Optional[str] = Header(None),
     x_github_delivery: Optional[str] = Header(None),
     x_hub_signature_256: Optional[str] = Header(None),
 ):
     if x_hub_signature_256:
         x_hub_signature_256 = x_hub_signature_256.strip("sha256=")
-    return RequestHeaders(
+    return GithubHeaders(
         event_name=x_gitHub_event,
         delivery_guid=x_github_delivery,
         secret_hash=x_hub_signature_256,
@@ -41,7 +41,7 @@ def get_headers(
 
 async def auth_with_secret(
     request: Request,
-    headers: RequestHeaders = Depends(get_headers),
+    headers: GithubHeaders = Depends(get_github_headers),
 ):
     """
     Authenticate the webhook request using the webhook's secret
