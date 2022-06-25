@@ -53,11 +53,14 @@ async def auth_with_secret(
         )
 
     body = await request.body()
-    signature = hmac.new(
-        WEBHOOK_SECRET.encode("utf-8"),
-        msg=body,
-        digestmod=hashlib.sha256,
-    ).hexdigest()
+    signature = (
+        "sha256="
+        + hmac.new(
+            WEBHOOK_SECRET.encode("utf-8"),
+            msg=body,
+            digestmod=hashlib.sha256,
+        ).hexdigest()
+    )
 
     if signature.lower() != headers.secret_hash.lower():
         raise HTTPException(
